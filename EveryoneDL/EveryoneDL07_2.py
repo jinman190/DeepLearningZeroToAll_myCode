@@ -18,7 +18,7 @@ hypothesis = tf.nn.softmax(tf.matmul(X, W) + b)
 cost = tf.reduce_mean(-tf.reduce_sum(Y*tf.log(hypothesis), axis=1))
 optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.1).minimize(cost) 
 
-is_correct = tf.equal(tf.arg_max(hypothesis, 1), tf.arg_max(Y, 1))
+is_correct = tf.equal(tf.argmax(hypothesis, 1), tf.argmax(Y, 1))
 accuracy = tf.reduce_mean(tf.cast(is_correct, tf.float32))
 
 training_epochs = 15
