@@ -1,5 +1,5 @@
 # 실제 mnist 숫자 이미지로 cnn 시스템 개발2, 깊이를 늘려서 정확도 99%
-# convolutional layer 1 -> layer 2 -> fullyconnected layer
+# convolutional layer 1 -> layer 2 -> layer 3 -> dropout layer -> fullyconnected layer
 
 import tensorflow as tf
 import matplotlib.pyplot as plt
