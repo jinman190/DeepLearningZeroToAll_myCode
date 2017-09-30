@@ -1,0 +1,71 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>e3b77a68-4968-4201-9b3e-ad25378a5ac6</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>EveryoneDL01.py</StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <Name>EveryoneDL</Name>
+    <RootNamespace>EveryoneDL</RootNamespace>
+    <InterpreterId>Global|ContinuumAnalytics|Anaconda36-64</InterpreterId>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="EveryoneDL11_4.py" />
+    <Compile Include="EveryoneDL11_3.py" />
+    <Compile Include="EveryoneDL11_2.py" />
+    <Compile Include="EveryoneDL11.py" />
+    <Compile Include="EveryoneDL08_2.py" />
+    <Compile Include="EveryoneDL08.py" />
+    <Compile Include="EveryoneDL07_2.py" />
+    <Compile Include="EveryoneDL07.py" />
+    <Compile Include="EveryoneDL06_2.py" />
+    <Compile Include="EveryoneDL06.py" />
+    <Compile Include="EveryoneDL05_2.py" />
+    <Compile Include="EveryoneDL05.py" />
+    <Compile Include="EveryoneDL04_4.py" />
+    <Compile Include="EveryoneDL04_3_data.csv" />
+    <Compile Include="EveryoneDL04_3.py" />
+    <Compile Include="EveryoneDL04_2.py" />
+    <Compile Include="EveryoneDL04.py" />
+    <Compile Include="EveryoneDL03_2.py" />
+    <Compile Include="EveryoneDL03.py" />
+    <Compile Include="EveryoneDL02.py" />
+    <Compile Include="EveryoneDL01_2.py" />
+    <Compile Include="EveryoneDL01.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="Global|ContinuumAnalytics|Anaconda36-64" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="EveryoneDL05_2_data.csv" />
+    <Content Include="EveryoneDL06_2.csv" />
+    <Content Include="MNIST_data\t10k-images-idx3-ubyte.gz" />
+    <Content Include="MNIST_data\t10k-labels-idx1-ubyte.gz" />
+    <Content Include="MNIST_data\train-images-idx3-ubyte.gz" />
+    <Content Include="MNIST_data\train-labels-idx1-ubyte.gz" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="MNIST_data\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+  <!-- Uncomment the CoreCompile target to enable the Build command in
+       Visual Studio and specify your pre- and post-build commands in
+       the BeforeBuild and AfterBuild targets below. -->
+  <!--<Target Name="CoreCompile" />-->
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+</Project>
