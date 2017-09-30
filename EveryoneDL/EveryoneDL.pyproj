@@ -22,6 +22,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="EveryoneDL11_7.py" />
     <Compile Include="EveryoneDL11_6.py" />
     <Compile Include="EveryoneDL11_5.py" />
     <Compile Include="EveryoneDL11_4.py" />
