@@ -48,6 +48,7 @@
     <Compile Include="EveryoneDL02.py" />
     <Compile Include="EveryoneDL01_2.py" />
     <Compile Include="EveryoneDL01.py" />
+    <Compile Include="EveryoneDL12_6.py" />
     <Compile Include="EveryoneDL12_5.py" />
     <Compile Include="EveryoneDL12_4.py" />
     <Compile Include="EveryoneDL12_3.py" />
@@ -59,6 +60,7 @@
   <ItemGroup>
     <Content Include="EveryoneDL05_2_data.csv" />
     <Content Include="EveryoneDL06_2.csv" />
+    <Content Include="EveryoneDL12_6.csv" />
     <Content Include="MNIST_data\t10k-images-idx3-ubyte.gz" />
     <Content Include="MNIST_data\t10k-labels-idx1-ubyte.gz" />
     <Content Include="MNIST_data\train-images-idx3-ubyte.gz" />
