@@ -73,7 +73,7 @@ with tf.Session() as sess:
         l, _ = sess.run([loss, train], feed_dict={X:x_data, Y:y_data})
         result = sess.run(prediction, feed_dict={X:x_data})
 #        print(i, " loss: ", l, " prediction: ", result, " true Y: ", y_data)
-        print(i, " loss: ", l, " prediction: ", result[0], " true Y: ", y_data[0])
+        print(i, " loss: ", l, " prediction: ", result[0], " true Y: ", y_data[0]) #첫번째 결과만 출력해보자
 
-        result_str = [idx2char[c] for c in np.squeeze(result[0])]
+        result_str = [idx2char[c] for c in np.squeeze(result[0])] #첫번째 결과만 출력해보자
         print(" prediction str: ", ''.join(result_str))
