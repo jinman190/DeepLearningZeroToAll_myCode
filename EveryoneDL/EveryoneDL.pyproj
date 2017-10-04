@@ -48,6 +48,7 @@
     <Compile Include="EveryoneDL02.py" />
     <Compile Include="EveryoneDL01_2.py" />
     <Compile Include="EveryoneDL01.py" />
+    <Compile Include="EveryoneRL04.py" />
     <Compile Include="EveryoneRL03.py" />
     <Compile Include="EveryoneRL02.py" />
     <Compile Include="EveryoneDL12_6.py" />
