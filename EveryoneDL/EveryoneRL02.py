@@ -3,8 +3,9 @@
 우분투에서 먼저 실행할 것
 source ~/tensorflow/bin/activate
 export DISPLAY=:0
-cd /mnt/c/Users/jinma/Desktop/GitHub/DeepLearningZeroToAll_myCode
+cd /mnt/c/Users/jinma/Desktop/GitHub/DeepLearningZeroToAll_myCode/EveryoneDL
 윈도우에서 xming 실행
+python3 EveryoneRL02.py
 '''
 import gym
 env = gym.make("Taxi-v2")
