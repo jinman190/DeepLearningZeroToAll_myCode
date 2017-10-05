@@ -4,6 +4,7 @@
 source ~/tensorflow/bin/activate
 export DISPLAY=:0
 cd /mnt/c/Users/jinma/Desktop/GitHub/DeepLearningZeroToAll_myCode
+윈도우에서 xming 실행
 '''
 import gym
 env = gym.make("Taxi-v2")
