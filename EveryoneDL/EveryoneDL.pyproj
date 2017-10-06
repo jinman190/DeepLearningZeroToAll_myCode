@@ -48,7 +48,7 @@
     <Compile Include="EveryoneDL02.py" />
     <Compile Include="EveryoneDL01_2.py" />
     <Compile Include="EveryoneDL01.py" />
-    <Compile Include="EveryoneRL07.py" />
+    <Compile Include="EveryoneRL06_2.py" />
     <Compile Include="EveryoneRL06.py" />
     <Compile Include="EveryoneRL05.py" />
     <Compile Include="EveryoneRL04.py" />
