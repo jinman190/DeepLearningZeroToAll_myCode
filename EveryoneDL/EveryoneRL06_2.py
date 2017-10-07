@@ -42,7 +42,7 @@ for i in range(num_episodes):
     done = False
     e = 1. / ((i // 100)+1)  # 플레이 할 수록 랜덤이 줄어듬
     local_loss = []
-    step_count = 0 #죽은 횟수
+    step_count = 0 #플레이한 프레임 수
 
     while not done:
         step_count += 1
