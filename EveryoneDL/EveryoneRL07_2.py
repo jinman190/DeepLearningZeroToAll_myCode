@@ -154,7 +154,8 @@ def main():
 
             print("Episode: {} steps: {}".format(episode, step_count))
             if step_count > 9999:
-                break
+                #pass
+                break                    #한번 10000프레임까지 했으면 됐으면 관두자          
 
             if episode % 10 == 1:   #10번 죽을 때마다 한번씩 학습 하자
                 for _ in range(50):
