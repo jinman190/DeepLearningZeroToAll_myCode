@@ -22,15 +22,18 @@ class DQN:
         self.net_name = name
         self._build_network()
 
-    def _build_network(self, h_size=100, l_rate=1e-1):
+    def _build_network(self, h_size=30, l_rate=1e-1):
         with tf.variable_scope(self.net_name):  #net_name(main, target)에 따라 다른 변수를 쓰는 부분
             self._X = tf.placeholder(tf.float32, [None, self.input_size], name="input_x") 
 
             W1 = tf.get_variable("W1", shape=[self.input_size, h_size], initializer=tf.contrib.layers.xavier_initializer())
             layer1 = tf.nn.tanh(tf.matmul(self._X, W1))
 
-            W2 = tf.get_variable("W2", shape=[h_size, self.output_size], initializer=tf.contrib.layers.xavier_initializer())
-            self._Qpred = tf.matmul(layer1, W2)
+            W2 = tf.get_variable("W2", shape=[h_size, h_size], initializer=tf.contrib.layers.xavier_initializer())
+            layer2 = tf.nn.tanh(tf.matmul(layer1, W2))
+
+            W3 = tf.get_variable("W3", shape=[h_size, self.output_size], initializer=tf.contrib.layers.xavier_initializer())
+            self._Qpred = tf.matmul(layer2, W3)
 
         self._Y = tf.placeholder(shape=[None, self.output_size], dtype=tf.float32)      #현재까지 알고 있는 정답을 Y로 받아
         self._loss = tf.reduce_mean(tf.square(self._Y - self._Qpred))                   #loss를 계산
@@ -53,16 +56,16 @@ def simple_replay_train(DQN, targetDQN, train_batch):
         if state is None:
             print("None State, ", action, " , ", reward, " , ", next_state, " , ", done)
         else:
-            stateR = state.reshape(-1, DQN.input_size) ##################입력 형태를 슈퍼마리오에 맞춰줌
-            Q = DQN.predict(stateR)
+            Q = DQN.predict(state)
 
             if done:
                 Q[0, action] = reward
             else:
                 Q[0, action] = reward + dis * np.max(targetDQN.predict(next_state)) #예상 Y 값은 target에서 가져오고
 
-        y_stack = np.vstack([y_stack, Q])
-        x_stack = np.vstack([x_stack, stateR])
+            y_stack = np.vstack([y_stack, Q])
+            stateR = state.reshape(-1, DQN.input_size) ##################입력 형태를 슈퍼마리오에 맞춰줌
+            x_stack = np.vstack([x_stack, stateR])
 
     return DQN.update(x_stack, y_stack) #업데이트는 메인을 업데이트
 
@@ -99,7 +102,7 @@ def get_copy_var_ops(*, dest_scope_name="target", src_scope_name="main"):
 
 
 
-dis = .5
+dis = .99
 learning_rate = 0.1
 REPLAY_MEMORY = 50000
 
@@ -153,20 +156,24 @@ def main():
         sess.run(copy_ops)
 
         for episode in range(max_episodes):
-            e = 1. / ((episode // 100)+1)  # 플레이 할 수록 랜덤이 줄어듬
+            e = 1. / ((episode // 1000)+1)  # 플레이 할 수록 랜덤이 줄어듬
             done = False
             step_count = 0 #플레이한 프레임 수
 
             state = env.reset()
 
             while not done:
-                if np.random.rand(1) < e:
-                    action = env.action_space.sample()  #다른데도 좀 가보자
-                else:
-                    action = np.argmax(mainDQN.predict(state))       #제일 좋은데로 가자. 랜덤 조금만 섞고        
-
+                if step_count %5 == 0:                                          #입력 값을 5프레임에 한번만 바꾸자
+                    if np.random.rand(1) < e or state is None or state.size == 1:
+                        action = env.action_space.sample()  #다른데도 좀 가보자
+                    else:
+                        action = mainDQN.predict(state).flatten().tolist()      #제일 좋은데로 가자. ##################입력 형태를 슈퍼마리오에 맞춰줌
+                        for i in range(len(action)):
+                            if action[i] > 0.5 :
+                                action[i] = 1
+                            else:
+                                action[i] = 0
                 next_state, reward, done, info = env.step(action)
-#                print(next_state.shape);
                 if done:
                     reward = -100        #실패하면 최악의 점수!
 
@@ -184,7 +191,7 @@ def main():
                 #pass
 #                break                    #한번 10000프레임까지 했으면 됐으면 관두자          
 
-            if True: #episode % 10 == 1:   #10번 죽을 때마다 한번씩 학습 하자
+            if episode % 10 == 1:   #10번 죽을 때마다 한번씩 학습 하자
                 for _ in range(50):
                     minibatch = random.sample(replay_buffer, 10)
                     loss, _ = simple_replay_train(mainDQN, targetDQN, minibatch)
