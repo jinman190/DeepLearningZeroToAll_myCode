@@ -133,7 +133,8 @@ def ddqn_replay_train(mainDQN, targetDQN, train_batch):
             else:
                 # Double DQN: y = r + gamma * targetDQN(s')[a] where
                 # a = argmax(mainDQN(s'))
-                Q[0, action] = reward + dis * targetDQN.predict(next_state)[0, np.argmax(mainDQN.predict(next_state))]
+                # Q[0, action] = reward + dis * targetDQN.predict(next_state)[0, np.argmax(mainDQN.predict(next_state))]
+                Q[0, action] = reward + dis * np.max(targetDQN.predict(next_state)) #####use normal one for now
 
             y_stack = np.vstack([y_stack, Q])
             x_stack = np.vstack([x_stack, state.reshape(-1, mainDQN.input_size)])   #####change shape to fit to super mario
