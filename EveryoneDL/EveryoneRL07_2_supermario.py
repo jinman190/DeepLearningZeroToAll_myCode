@@ -1,8 +1,7 @@
-# DQN 2015 - 막대기 균형 잡기 (학습 네트웍과 메인 네트웍 두개로 나눠서 학습)
+# DQN 2015 - 슈퍼마리오
 # 이 게임 받은 곳 https://github.com/ppaquette/gym-super-mario
 
 import gym
-import gym_pull
 import numpy as np
 import random
 from collections import deque
@@ -53,7 +52,7 @@ def simple_replay_train(DQN, targetDQN, train_batch):
     y_stack = np.empty(0).reshape(0, DQN.output_size)
 
     for state, action, reward, next_state, done in train_batch:
-        if state is None:
+        if state is None:                                                               #####이건 뭔 에러?
             print("None State, ", action, " , ", reward, " , ", next_state, " , ", done)
         else:
             Q = DQN.predict(state)
@@ -163,8 +162,8 @@ def main():
             state = env.reset()
 
             while not done:
-                if step_count %5 == 0:                                          #입력 값을 5프레임에 한번만 바꾸자
-                    if np.random.rand(1) < e or state is None or state.size == 1:
+                if step_count % 10 == 0:                                          #입력 값을 5프레임에 한번만 바꾸자
+                    if np.random.rand(1) < e or state is None or state.size == 1: #####이건 뭔 에러?
                         action = env.action_space.sample()  #다른데도 좀 가보자
                     else:
                         action = mainDQN.predict(state).flatten().tolist()      #제일 좋은데로 가자. ##################입력 형태를 슈퍼마리오에 맞춰줌
@@ -174,8 +173,8 @@ def main():
                             else:
                                 action[i] = 0
                 next_state, reward, done, info = env.step(action)
-                if done:
-                    reward = -100        #실패하면 최악의 점수!
+#                if done:
+#                    reward = -100        #실패하면 최악의 점수!
 
                 replay_buffer.append((state, action, reward, next_state, done))
                 if len(replay_buffer) > REPLAY_MEMORY:
