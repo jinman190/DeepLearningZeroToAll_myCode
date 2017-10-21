@@ -57,27 +57,75 @@ class DQN:
 
         self._build_network()
 
-    def _build_network(self, h_size=10, l_rate=1e-1):
+    def _build_network(self, h_size=10, l_rate=0.01):
         with tf.variable_scope(self.net_name):
             self._X = tf.placeholder(tf.float32, [None, self.input_size], name="input_x")
 
             # First layer of weights
-            W1 = tf.get_variable("W1", shape=[self.input_size, h_size],
-                                 initializer=tf.contrib.layers.xavier_initializer())
-            layer1 = tf.nn.tanh(tf.matmul(self._X, W1))
+#            W1 = tf.get_variable("W1", shape=[self.input_size, h_size],
+#                                 initializer=tf.contrib.layers.xavier_initializer())
+#            layer1 = tf.nn.tanh(tf.matmul(self._X, W1))
 
             # Second layer of Weights
-            W2 = tf.get_variable("W2", shape=[h_size, self.output_size],
-                                 initializer=tf.contrib.layers.xavier_initializer())
+#            W2 = tf.get_variable("W2", shape=[h_size, self.output_size],
+#                                 initializer=tf.contrib.layers.xavier_initializer())
 
             # Q prediction
-            self._Qpred = tf.matmul(layer1, W2)
+#            self._Qpred = tf.matmul(layer1, W2)
+
+
+
+
+            filters3 = 16
+
+#            X_img = tf.reshape(self.X, [-1, 28, 28, 1])
+            X_img = tf.reshape(self._X, [-1, 224, 256, 3])
+            print("shape X_img ")
+            print(X_img.get_shape())
+            L1 = tf.layers.conv2d(inputs=X_img, filters=8, kernel_size=[3,3], padding="SAME", activation=tf.nn.tanh)
+            print("shape L1 ")
+            print(L1.get_shape())
+            L1 = tf.layers.max_pooling2d(inputs=L1, pool_size=[2,2], padding="SAME", strides=4)
+            print("shape L1 ")
+            print(L1.get_shape())
+            L2 = tf.layers.conv2d(inputs=L1, filters=32, kernel_size=[3,3], padding="SAME", activation=tf.nn.tanh)
+            print("shape L2 ")
+            print(L2.get_shape())
+            L2 = tf.layers.max_pooling2d(inputs=L2, pool_size=[2,2], padding="SAME", strides=4)
+            print("shape L2 ")
+            print(L2.get_shape())
+            L2 = tf.reshape(L1, [-1, 14 * 16 * 32])
+#            L3 = tf.layers.conv2d(inputs=L2, filters=filters3, kernel_size=[3,3], padding="SAME", activation=tf.nn.tanh)
+#            print("shape L3 ")
+#            print(L3.get_shape())
+#            L3 = tf.layers.max_pooling2d(inputs=L3, pool_size=[2,2], padding="SAME", strides=2)
+#            print("shape L3 ")
+#            print(L3.get_shape())
+#            L3 = tf.reshape(L3, [-1, 28 * 32 * filters3])
+
+            L4 = tf.layers.dense(inputs=L2, units=128, activation=tf.nn.relu)
+            print("shape L4 ")
+            print(L4.get_shape())
+            L4 = tf.nn.dropout(L4, 0.7) #dropout 확률
+            print("shape L4 ")
+            print(L4.get_shape())
+#            L4 = tf.layers.dropout(inputs=L4, rate=self.keep_prob, training=self.training) #결과가 다름????
+
+            W5 = tf.get_variable("W5", shape=[128, self.output_size], initializer=tf.contrib.layers.xavier_initializer())
+            b = tf.Variable(tf.random_normal([self.output_size]))
+
+        self._Qpred = tf.sigmoid(tf.matmul(L4, W5) + b) #hypothesis
+        print("shape hypothesis ")
+        print(self._Qpred.get_shape())
 
         # We need to define the parts of the network needed for learning a policy
         self._Y = tf.placeholder(shape=[None, self.output_size], dtype=tf.float32)
 
         # Loss function
-        self._loss = tf.reduce_mean(tf.square(self._Y - self._Qpred))
+#        self._loss = tf.reduce_mean(tf.square(self._Y - self._Qpred))
+#        self._loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=self._Qpred, labels=self._Y))
+        self._loss = -tf.reduce_mean(self._Y*tf.log(self._Qpred) + (1-self._Y)*(tf.log(1-self._Qpred)))#for sigmoid
+
         # Learning
         self._train = tf.train.AdamOptimizer(learning_rate=l_rate).minimize(self._loss)
 
@@ -94,7 +142,7 @@ def replay_train(mainDQN, targetDQN, train_batch):
 
     # Get stored information from the buffer
     for state, action, reward, next_state, done in train_batch:
-        Q = mainDQN.predic(state)
+        Q = mainDQN.predict(state)
 
         # terminal?
         if done:
@@ -133,10 +181,11 @@ def ddqn_replay_train(mainDQN, targetDQN, train_batch):
             else:
                 # Double DQN: y = r + gamma * targetDQN(s')[a] where
                 # a = argmax(mainDQN(s'))
-                Q[0, action] = reward + dis * targetDQN.predict(next_state)[0, np.argmax(mainDQN.predict(next_state))]
+                # Q[0, action] = reward + dis * targetDQN.predict(next_state)[0, np.argmax(mainDQN.predict(next_state))]
+                Q[0, action] = reward + dis * np.max(targetDQN.predict(next_state))     #####use normal one for now
 
             y_stack = np.vstack([y_stack, Q])
-            x_stack = np.vstack([x_stack, state.reshape(-1, mainDQN.input_size)])   #####change shape to fit to super mario
+            x_stack = np.vstack([x_stack, state.reshape(-1, mainDQN.input_size)])       #####change shape to fit to super mario
 
     # Train our network using target and predicted Q values on each episode
     return mainDQN.update(x_stack, y_stack)
@@ -168,7 +217,7 @@ def bot_play(mainDQN, env=env):
             break
 
 def main():
-    max_episodes = 5000
+    max_episodes = 2000
     # store the previous observations in replay memory
     replay_buffer = deque()
 
@@ -177,36 +226,42 @@ def main():
         targetDQN = DQN(sess, input_size, output_size, name="target")
         tf.global_variables_initializer().run()
 
+        writer = tf.summary.FileWriter('./SuperMario03myUpdate')                        ##3##draw graph to tensorboard (from DeepLearningZeroToAll lab 09-4)
+        writer.add_graph(sess.graph)                                                    ##3##draw graph to tensorboard
+
         #initial copy q_net -> target_net
         copy_ops = get_copy_var_ops(dest_scope_name="target", src_scope_name="main")
         sess.run(copy_ops)
 
         for episode in range(max_episodes):
-            e = 1. / ((episode / 10) + 1)
+            e = 1. / ((episode / float(max_episodes)) + 1)
             done = False
             step_count = 0
             state = env.reset()
 
             while not done:
-                if np.random.rand(1) < e or state is None or state.size == 1:           #####why does this happen?
-                    action = env.action_space.sample()
-                else:
-                    # Choose an action by greedily from the Q-network
-                    #action = np.argmax(mainDQN.predict(state))
-                    action = mainDQN.predict(state).flatten().tolist()                  #####flatten it and change it as a list
-                    for i in range(len(action)):                                        #####the action list has to have only integer 1 or 0
-                        if action[i] > 0.5 :
-                            action[i] = 1                                               #####integer 1 only, no 1.0
-                        else:
-                            action[i] = 0                                               #####integer 0 only, no 0.0
+                if step_count % 5 == 0:                                          #입력 값을 5프레임에 한번만 바꾸자
+                    if np.random.rand(1) < e or state is None or state.size == 1:       #####why does this happen?
+                        actionList = env.action_space.sample()
+                    else:
+                        # Choose an action by greedily from the Q-network
+                        #action = np.argmax(mainDQN.predict(state))
+                        action = mainDQN.predict(state).flatten()                       #####flatten it and change it as a list
+                        actionList = []
+                        for i in range(output_size):                                    #####the action list has to have only integer 1 or 0
+                            if action[i] > 0.3 :
+                                actionList.append(1)                                    #####integer 1 only, no 1.0
+                            else:
+                                actionList.append(0)                                    #####integer 0 only, no 0.0
 
                 # Get new state and reward from environment
-                next_state, reward, done, _ = env.step(action)
-                if done: # Penalty
+                next_state, reward, done, _ = env.step(actionList)
+
+                if done: # Penalty                                                     ##3## remove temporary penalty
                     reward = -100
 
                 # Save the experience to our buffer
-                replay_buffer.append((state, action, reward, next_state, done))
+                replay_buffer.append((state, actionList, reward, next_state, done))
                 if len(replay_buffer) > REPLAY_MEMORY:
                       replay_buffer.popleft()
 
@@ -220,7 +275,7 @@ def main():
                 pass
                 # break
 
-            if episode % 10 == 1: # train every 10 episode
+            if episode % 10 == 9: # train every 10 episode
                 # Get a random batch of experiences
                 for _ in range(50):
                     minibatch = random.sample(replay_buffer, 10)
