@@ -48,6 +48,7 @@
     <Compile Include="EveryoneDL02.py" />
     <Compile Include="EveryoneDL01_2.py" />
     <Compile Include="EveryoneDL01.py" />
+    <Compile Include="EveryonePyTorch02.py" />
     <Compile Include="SuperMario03myUpdate.py" />
     <Compile Include="SuperMario02DQN2015.py" />
     <Compile Include="SuperMario01Random.py" />
