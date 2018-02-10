@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>e3b77a68-4968-4201-9b3e-ad25378a5ac6</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>EveryoneDL01.py</StartupFile>
+    <StartupFile>3MinTensorflow_GAN.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -48,6 +48,8 @@
     <Compile Include="EveryoneDL02.py" />
     <Compile Include="EveryoneDL01_2.py" />
     <Compile Include="EveryoneDL01.py" />
+    <Compile Include="3MinTensorflow_GAN.py" />
+    <Compile Include="EveryonePyTorch05.py" />
     <Compile Include="EveryonePyTorch04.py" />
     <Compile Include="EveryonePyTorch03.py" />
     <Compile Include="EveryonePyTorch02.py" />
